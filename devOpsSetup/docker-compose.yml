@@ -9,6 +9,6 @@ services:
         GITHUB_USERNAME: ${GITHUB_USERNAME}
         GITHUB_TOKEN: ${GITHUB_TOKEN}
     ports:
-      - "8082:5000"
+      - "8080:5000"
       - "443:443"
-    command: tail -F anything
+    command: python3 /opt/NexoSphere/sourceCode/hello.py

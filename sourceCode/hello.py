@@ -8,4 +8,4 @@ def hello():
     return 'Hello, World!'
 
 if __name__ == "__main__":
-    app.run(debug=True)  # Start the server
+    app.run(debug=True, host='localhost', port=9874)  # Start the server
