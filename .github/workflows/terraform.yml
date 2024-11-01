@@ -7,6 +7,9 @@ on:
   pull_request:
     branches:
       - nishant
+  workflow_dispatch:  # Allows manual triggering
+    branches:
+      - nishant
 
 jobs:
   terraform:

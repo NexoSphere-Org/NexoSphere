@@ -2,6 +2,8 @@ name: Deploy to EC2
 
 on:
   workflow_dispatch:  # Allows manual triggering
+    branches:
+      - nishant
   pull_request:
     branches:
       - nishant
