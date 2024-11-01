@@ -17,6 +17,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: List Terraform Directory
+      run: ls -la terraform  # List files to check presence
+
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v2
       with:
