@@ -4,7 +4,7 @@ on:
   workflow_dispatch:  # Manual trigger
     branches:
       - nishant
-  pull:
+  pull_request:
     branches:
       - nishant
 
