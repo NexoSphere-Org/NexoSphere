@@ -1,0 +1,33 @@
+name: Terraform
+
+on:
+  push:
+    branches:
+      - nishant
+  pull_request:
+    branches:
+      - nishant
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    needs: build  # This ensures that the terraform job runs after the build job
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.0.0  # Specify the Terraform version
+
+    - name: Initialize Terraform
+      run: terraform init
+      working-directory: terraform  # Specify the working directory
+
+    - name: Apply Terraform
+      run: terraform apply -auto-approve
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.TF_AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_AWS_SECRET_ACCESS_KEY }}
