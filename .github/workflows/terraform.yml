@@ -1,9 +1,6 @@
 name: Terraform
 
 on:
-  push:
-    branches:
-      - nishant
   pull_request:
     branches:
       - nishant
