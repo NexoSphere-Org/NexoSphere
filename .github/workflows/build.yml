@@ -4,9 +4,9 @@ on:
   workflow_dispatch:  # Manual trigger
     branches:
       - nishant
-  # push:
-  #   branches:
-  #     - nishant
+  pull:
+    branches:
+      - nishant
 
 jobs:
   run-docker:
