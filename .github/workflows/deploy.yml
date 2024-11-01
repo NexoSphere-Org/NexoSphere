@@ -1,0 +1,46 @@
+name: Deploy to EC2
+
+on:
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Download Instance IP Artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: instance-ip
+
+    - name: Load Instance IP
+      id: load_ip
+      run: |
+        INSTANCE_IP=$(jq -r '.instance_ip' output.json)
+        echo "instance_ip=${INSTANCE_IP}" >> $GITHUB_ENV
+
+    - name: Deploy to EC2
+      env:
+        INSTANCE_IP: ${{ env.instance_ip }}
+        SSH_PRIVATE_KEY: ${{ secrets.AWS_SSH_PRIVATE_KEY }}  # Ensure you have the private key as a secret
+    
+    - run: |
+        echo "Deploying to EC2 instance at IP: $INSTANCE_IP"
+
+        # Copy source code and Dockerfile to the EC2 instance
+        echo "$SSH_PRIVATE_KEY" | ssh -o StrictHostKeyChecking=no -i /dev/stdin ubuntu@$INSTANCE_IP "mkdir -p /home/ubuntu/app && cd /home/ubuntu/app && exit"
+
+        scp -o StrictHostKeyChecking=no -i /dev/stdin -r ./* ubuntu@$INSTANCE_IP:/home/ubuntu/app/
+
+        # SSH into the EC2 instance and build & run the Docker container
+        ssh -o StrictHostKeyChecking=no -i /dev/stdin ubuntu@$INSTANCE_IP << 'EOF'
+          cd /home/ubuntu/app/
+          sudo snap install docker
+          # Build the Docker image
+          docker build -t my-app .
+          # Run the Docker container using Docker Compose
+          docker-compose up -d --build
+        EOF

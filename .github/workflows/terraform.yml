@@ -35,3 +35,16 @@ jobs:
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.TF_AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_AWS_SECRET_ACCESS_KEY }}
+
+    - name: Get EC2 Instance IP
+      id: get_ip
+      run: |
+        INSTANCE_IP=$(terraform output -raw coen6313_project_public_dns)
+        echo "instance_ip=${INSTANCE_IP}" >> $GITHUB_ENV
+        echo "{\"instance_ip\": \"${INSTANCE_IP}\"}" > output.json
+
+    - name: Upload Instance IP as Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: instance-ip
+        path: output.json
