@@ -24,6 +24,7 @@ jobs:
       uses: hashicorp/setup-terraform@v2
       with:
         terraform_version: 1.0.0  # Specify the Terraform version
+        terraform_wrapper: false
 
     - name: Initialize Terraform
       run: terraform init
@@ -38,13 +39,60 @@ jobs:
 
     - name: Get EC2 Instance IP
       id: get_ip
+      working-directory: terraform  # Specify the working directory
       run: |
         INSTANCE_IP=$(terraform output -raw coen6313_project_public_dns)
-        echo "instance_ip=${INSTANCE_IP}" >> $GITHUB_ENV
         echo "{\"instance_ip\": \"${INSTANCE_IP}\"}" > output.json
 
+
     - name: Upload Instance IP as Artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: instance-ip
-        path: output.json
+        path: ./terraform/output.json
+  
+  deploy:
+    runs-on: ubuntu-latest
+    needs: terraform
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Download Instance IP Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: instance-ip
+        path: ./
+
+    - name: Load Instance IP
+      id: load_ip
+      run: |
+        INSTANCE_IP=$(jq -r '.instance_ip' output.json)
+        echo "instance_ip=${INSTANCE_IP}" >> $GITHUB_ENV
+
+    - name: Deploy to EC2
+      env:
+        INSTANCE_IP: ${{ env.instance_ip }}
+        SSH_PRIVATE_KEY: ${{ secrets.AWS_SSH_PRIVATE_KEY }}  # Ensure you have the private key as a secret
+      run: |
+        echo "Deploying to EC2 instance at IP: $INSTANCE_IP"
+
+        echo "$SSH_PRIVATE_KEY" > temp_key.pem
+        chmod 400 temp_key.pem
+
+        ssh -o StrictHostKeyChecking=no -i temp_key.pem ubuntu@$INSTANCE_IP "mkdir -p /home/ubuntu/app && exit"
+
+        scp -o StrictHostKeyChecking=no -i temp_key.pem -r ./* ubuntu@$INSTANCE_IP:/home/ubuntu/app/
+
+        # SSH into the EC2 instance and build & run the Docker container
+        ssh -o StrictHostKeyChecking=no -i temp_key.pem ubuntu@$INSTANCE_IP << 'EOF'
+          cd /home/ubuntu/app/
+          sudo snap install docker
+          # Run the Docker container using Docker Compose
+          sleep 5
+          sudo docker-compose up -d
+        EOF
+
+        rm temp_key.pem  # Clean up the temporary file
+

@@ -30,8 +30,8 @@ resource "aws_security_group" "coen6313_project_sg" {
   }
 
   ingress {
-    from_port   = 9874
-    to_port     = 9874
+    from_port   = 8080
+    to_port     = 8080
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
