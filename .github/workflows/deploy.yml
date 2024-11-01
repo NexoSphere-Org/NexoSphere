@@ -30,20 +30,18 @@ jobs:
     - name: Deploy to EC2
       env:
         INSTANCE_IP: ${{ env.instance_ip }}
-        SSH_PRIVATE_KEY: ${{ secrets.AWS_SSH_PRIVATE_KEY }}  # Ensure you have the private key as a secret
-    
-    - run: |
+        SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}  # Ensure you have the private key as a secret
+      run: |
         echo "Deploying to EC2 instance at IP: $INSTANCE_IP"
 
-        # Copy source code and Dockerfile to the EC2 instance
-        echo "$SSH_PRIVATE_KEY" | ssh -o StrictHostKeyChecking=no -i /dev/stdin ubuntu@$INSTANCE_IP "mkdir -p /home/ubuntu/app && cd /home/ubuntu/app && exit"
+        # Set up SSH key for authentication and copy files
+        echo "$SSH_PRIVATE_KEY" | ssh -o StrictHostKeyChecking=no -i /dev/stdin ubuntu@$INSTANCE_IP "mkdir -p /home/ubuntu/app && exit"
 
         scp -o StrictHostKeyChecking=no -i /dev/stdin -r ./* ubuntu@$INSTANCE_IP:/home/ubuntu/app/
 
         # SSH into the EC2 instance and build & run the Docker container
         ssh -o StrictHostKeyChecking=no -i /dev/stdin ubuntu@$INSTANCE_IP << 'EOF'
           cd /home/ubuntu/app/
-          sudo snap install docker
           # Build the Docker image
           docker build -t my-app .
           # Run the Docker container using Docker Compose
