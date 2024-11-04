@@ -36,11 +36,7 @@ A testing framework should be established to evaluate the summaries against expe
 Automated tests should run with various inputs to assess the model's robustness.
 Any discrepancies should be logged and flagged for review.
 
-Here’s the revised user story for the Quantitative Analyst with concise acceptance criteria:
+**As a Quantitative Analyst**, I want to leverage summarized stock news data to enhance my quantitative models, so that I can improve the accuracy of my market predictions and trading strategies.
 
-### User Story for Quantitative Analyst
-
-7. **As a Quantitative Analyst**, I want to leverage summarized stock news data to enhance my quantitative models, so that I can improve the accuracy of my market predictions and trading strategies.
-
-   - **Acceptance Criteria**: The summarization service must provide real-time, structured summaries and sentiment scores for relevant stock news articles, allowing for timely integration into quantitative models and storage for historical analysis.
+**Acceptance Criteria**: The summarization service must provide real-time, structured summaries and sentiment scores for relevant stock news articles, allowing for timely integration into quantitative models and storage for historical analysis.
 
