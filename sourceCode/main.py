@@ -1,10 +1,13 @@
 from flask import Flask, jsonify
-from YfAPICalls.stockMarketNewsYf import stockMarketNews
-from stockPriceService import generateDayStockOpeningTrend
+
+from stockpriceControllers.YfAPICalls.stockMarketNewsYf import stockMarketNews
+from stockpriceControllers.stockPriceService import generateDayStockOpeningTrend
 from sentimentControllers.news_route_controller import handle_get_news
+from tickerListService.tickerController import tickerRoutes
 
 app = Flask(__name__)
-
+#expose the ticker list service
+tickerRoutes(app)
 
 @app.route("/stockprice/<ticker>/<daySpan>")
 def getStockPrice(ticker, daySpan):
