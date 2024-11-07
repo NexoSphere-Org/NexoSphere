@@ -1,16 +1,14 @@
 import json
-from YfAPICalls.stockPriceYf import stockPrice
+from stockpriceControllers.YfAPICalls.stockPriceYf import stockPrice
+from stockpriceControllers.mongoDBConfig import mongoConnection
 
 def generateDayStockOpeningTrend(ticker, daySpan):
     dayString = str(daySpan)
     return stockPrice(ticker, dayString)["Open"]
 
-
-
 def generateFiveDayStockClosingTrend(ticker, daySpan):
     dayString = str(daySpan)
     return stockPrice(ticker, dayString)["Close"]
-
 
 
 def generateFiveDayStockVolumeTrend(ticker, daySpan):
@@ -19,7 +17,8 @@ def generateFiveDayStockVolumeTrend(ticker, daySpan):
 
 
 def storeDataMongoDB(data):
-    # store the data in DB
+    collection = mongoConnection()
+    collection.insert_one(data)
     return
 
 # print(generateFiveDayStockClosingTrend("DOL.TO"))
