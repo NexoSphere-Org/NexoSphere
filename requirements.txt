@@ -1,5 +1,7 @@
 flask
 yfinance
 pymongo
+redis
+APSchedulerpymongo
 python-dotenv
 polygon-api-client
