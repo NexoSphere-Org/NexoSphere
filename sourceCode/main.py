@@ -1,6 +1,6 @@
 from flask import Flask, jsonify
 
-from stockpriceControllers.YfAPICalls.stockMarketNewsYf import stockMarketNews
+from sourceCode.stockNewsControllers.newsYfHelper import stockMarketNews
 from stockpriceControllers.stockPriceService import generateDayStockOpeningTrend
 from sentimentControllers.news_route_controller import handle_get_news
 from tickerListService.tickerController import tickerRoutes

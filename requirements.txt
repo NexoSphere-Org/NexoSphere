@@ -1,2 +1,5 @@
 flask
 yfinance
+pymongo
+python-dotenv
+polygon-api-client

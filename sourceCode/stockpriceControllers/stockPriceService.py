@@ -1,5 +1,5 @@
 import json
-from stockpriceControllers.YfAPICalls.stockPriceYf import stockPrice
+from sourceCode.stockpriceControllers.stockPriceYf import stockPrice
 from stockpriceControllers.mongoDBConfig import mongoConnection
 
 def generateDayStockOpeningTrend(ticker, daySpan):
