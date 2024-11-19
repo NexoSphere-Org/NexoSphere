@@ -16,7 +16,7 @@ scheduler.start()
 #     func=scheduled_task, trigger="interval", seconds=60, next_run_time=datetime.now()
 # )
 scheduler.add_job(
-    func=scheduled_task, trigger="cron", hour=6, next_run_time=datetime.now()
+    func=scheduled_task, trigger="cron", hour=1, next_run_time=datetime.now()
 )
 
 

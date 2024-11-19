@@ -147,6 +147,7 @@ class NewsServices:
         }
         try:
             # start_time = time.time()
+            print("T5  running")
             response = requests.post(T5_API_URL, json=payload, headers=headers)
             # end_time = time.time()
             # t5_inference_time = round((end_time - start_time) * 1000, 2)
