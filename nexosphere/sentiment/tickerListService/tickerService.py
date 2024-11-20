@@ -1,5 +1,5 @@
 # GET, POST, UPDATE, DELETE for ticker choices.
-from tickerListService.tickerRepository import *
+from nexosphere.sentiment.tickerListService.tickerRepository import *
 
 
 def getTickerChoices(userId):

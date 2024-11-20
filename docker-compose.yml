@@ -1,22 +1,39 @@
-version: '3.8'
 
 services:
-  myapp:
+  nexosphere:
     build:
       context: .
       dockerfile: Dockerfile
-      # args:
-      #   GITHUB_USERNAME: ${GITHUB_USERNAME}
-      #   GITHUB_TOKEN: ${GITHUB_TOKEN}
+    environment:
+      - FLASK_APP=nexosphere
+      - FLASK_ENV=development
+      - COSMOS_URI=${COSMOS_URI}
+      - COSMOS_KEY=${COSMOS_KEY}
+      # - REDIS_HOST=redis
     ports:
+      - "5000:5000"
       - "8080:9874"
-      - "443:443"
-    command: python3 main.py
-    # command: tail -f /dev/null
 
-  # mongo:
-  #   image: mongo
-  #   ports:
-  #     - "27017:27017"
-  #   env_file:
-  #     - .env
+
+# version: '3.8'
+
+# services:
+#   myapp:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#       # args:
+#       #   GITHUB_USERNAME: ${GITHUB_USERNAME}
+#       #   GITHUB_TOKEN: ${GITHUB_TOKEN}
+#     ports:
+#       - "8080:9874"
+#       - "443:443"
+#     command: python3 main.py
+#     # command: tail -f /dev/null
+
+#   # mongo:
+#   #   image: mongo
+#   #   ports:
+#   #     - "27017:27017"
+#   #   env_file:
+#   #     - .env

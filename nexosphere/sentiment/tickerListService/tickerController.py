@@ -1,9 +1,9 @@
 from flask import request
-from tickerListService.tickerService import *
+from nexosphere.sentiment.tickerListService.tickerService import *
 
-def tickerRoutes(app):
+def tickerRoutes(bp):
     
-    @app.route("/user/getTickers", methods=['GET'])
+    @bp.route("/user/getTickers", methods=['GET'])
     def getTickers():
         userId = request.args.get('userId')
         result = getTickerChoices(int(userId))
@@ -14,7 +14,7 @@ def tickerRoutes(app):
         return result, 200
 
 
-    @app.route("/user/createTicker", methods=['POST'])
+    @bp.route("/user/createTicker", methods=['POST'])
     def createTicker():
         user_id = request.args.get('user_id')
         ticker = request.args.get('ticker')
@@ -27,7 +27,7 @@ def tickerRoutes(app):
         return {"message": "user already exist"}, 403
     
 
-    @app.route("/user/updateTicker", methods=['PUT'])
+    @bp.route("/user/updateTicker", methods=['PUT'])
     def updateTicker():
         user_id = request.args.get('user_id')
         ticker = request.args.get('ticker')
@@ -40,7 +40,7 @@ def tickerRoutes(app):
         return getTickerChoices(int(user_id)), 200
     
     
-    @app.route("/user/deleteTicker", methods=['DELETE'])
+    @bp.route("/user/deleteTicker", methods=['DELETE'])
     def deleteTicker():
         user_id = request.args.get('user_id')
         ticker = request.args.get('ticker')

@@ -1,6 +1,6 @@
 import json
-from stockpriceControllers.YfAPICalls.stockPriceYf import stockPrice
-from stockpriceControllers.mongoDBConfig import mongoConnection
+from nexosphere.sentiment.stockpriceControllers.YfAPICalls.stockPriceYf import stockPrice
+from nexosphere.sentiment.stockpriceControllers.mongoDBConfig import mongoConnection
 
 def generateDayStockOpeningTrend(ticker, daySpan):
     dayString = str(daySpan)

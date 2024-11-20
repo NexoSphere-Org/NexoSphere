@@ -1,4 +1,4 @@
-from tickerListService.mongoDBConfig import mongoConnection
+from nexosphere.sentiment.tickerListService.mongoDBConfig import mongoConnection
 
 def findUserTickerChoices(user_id):
     userCollection = mongoConnection()
