@@ -20,7 +20,7 @@ RUN apt update && \
     apt install pip -y
 
 WORKDIR /app
-COPY ./sourceCode .
+COPY ./nexosphere .
 # Copy requirements.txt first (this helps with caching layers)
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
