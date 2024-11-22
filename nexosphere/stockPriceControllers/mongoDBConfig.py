@@ -1,7 +1,8 @@
 import pymongo
+import os
 
 def mongoConnection():
-    client = pymongo.MongoClient("mongodb://localhost:27017/")
+    client = pymongo.MongoClient(os.getenv("MONGO_URL"))
 
     db = client["StockPrice"]
     collection = db["StockPrice"]
