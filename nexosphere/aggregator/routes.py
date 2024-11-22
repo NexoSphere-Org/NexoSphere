@@ -14,7 +14,6 @@ def aggregate():
 
     finnhub_api_key = current_app.config["FINNHUB_API_KEY"]
     alpha_vantage_api_key = current_app.config["ALPHA_VANTAGE_API_KEY"]
-    print(alpha_vantage_api_key)
 
     yahoo_data = fetch_yahoo_finance_data(ticker)
     finnhub_data = fetch_finnhub_data(ticker, finnhub_api_key)

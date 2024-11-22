@@ -10,6 +10,8 @@ services:
       - COSMOS_URI=${COSMOS_URI}
       - COSMOS_KEY=${COSMOS_KEY}
       # - REDIS_HOST=redis
+      - FINNHUB_API_KEY=${FINNHUB_API_KEY}
+      - ALPHA_VANTAGE_API_KEY=${ALPHA_VANTAGE_API_KEY}
     ports:
       - "5000:5000"
       - "8080:9874"
