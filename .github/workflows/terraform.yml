@@ -79,7 +79,7 @@ jobs:
       run: |
         echo "Deploying to EC2 instance at IP: $INSTANCE_IP"
 
-        echo "$ENV_FILE" > .env
+        echo "$ENV_FILE" > env
         echo "$SSH_PRIVATE_KEY" > temp_key.pem
         chmod 400 temp_key.pem
 
@@ -90,6 +90,7 @@ jobs:
         # SSH into the EC2 instance and build & run the Docker container
         ssh -o StrictHostKeyChecking=no -i temp_key.pem ubuntu@$INSTANCE_IP << 'EOF'
           cd /home/ubuntu/app/
+          sudo mv env .env
           sudo snap install docker
           # Run the Docker container using Docker Compose
           sleep 5
