@@ -22,6 +22,7 @@ jobs:
         run: |
           echo "$ENV_FILE" > .env
           chmod 775 .env
+          sudo chown -R $USER:$USER nexosphere/
           mv .env /nexosphere
 
       - name: Set up Docker Buildx
