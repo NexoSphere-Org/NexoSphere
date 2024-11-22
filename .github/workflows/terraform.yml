@@ -59,12 +59,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Load env file
-      env:
-        ENV_FILE: ${{ secrets.ENV_FILE }}
-      run: |
-        echo "$ENV_FILE" > .env
-
     - name: Download Instance IP Artifact
       uses: actions/download-artifact@v4
       with:
@@ -80,10 +74,12 @@ jobs:
     - name: Deploy to EC2
       env:
         INSTANCE_IP: ${{ env.instance_ip }}
-        SSH_PRIVATE_KEY: ${{ secrets.AWS_SSH_PRIVATE_KEY }}  # Ensure you have the private key as a secret
+        SSH_PRIVATE_KEY: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
+        ENV_FILE: ${{ secrets.ENV_FILE }}
       run: |
         echo "Deploying to EC2 instance at IP: $INSTANCE_IP"
 
+        echo "$ENV_FILE" > .env
         echo "$SSH_PRIVATE_KEY" > temp_key.pem
         chmod 400 temp_key.pem
 
