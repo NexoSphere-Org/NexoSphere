@@ -95,8 +95,10 @@ jobs:
           # Run the Docker container using Docker Compose
           sleep 5
           sudo docker-compose up -d
+          rm temp_key.pem  # Clean up the temporary file
+          rm .env #clean up the env file
         EOF
 
         rm temp_key.pem  # Clean up the temporary file
-        rm .env #clean up the env file
+        rm env #clean up the env file
 
