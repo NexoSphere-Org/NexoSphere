@@ -21,6 +21,7 @@ jobs:
           ENV_FILE: ${{ secrets.ENV_FILE }}
         run: |
           echo "$ENV_FILE" > .env
+          chmod 775 .env
           mv .env /nexosphere
 
       - name: Set up Docker Buildx
