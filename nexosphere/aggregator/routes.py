@@ -1,10 +1,7 @@
 from flask import request, jsonify, current_app
 from nexosphere.aggregator import bp
-from nexosphere.aggregator.services.yahoo import fetch_yahoo_finance_data
-from nexosphere.aggregator.services.finnhub import fetch_finnhub_data
-from nexosphere.aggregator.services.alpha_vantage import fetch_alpha_vantage_data
-from nexosphere.aggregator.services.aggregation import aggregate_data
-from nexosphere.config import Config
+from nexosphere.aggregator.services.data_aggregator import aggregate_data_naively
+from nexosphere.aggregator.services.public_data_ingestor import *
 
 @bp.route('/aggregate', methods=['GET'])
 def aggregate():
@@ -20,7 +17,9 @@ def aggregate():
     alpha_vantage_data = fetch_alpha_vantage_data(ticker, alpha_vantage_api_key)
 
     if yahoo_data and finnhub_data and alpha_vantage_data:
-        aggregated_data = aggregate_data(yahoo_data, finnhub_data, alpha_vantage_data)
+        aggregated_data = aggregate_data_naively(yahoo_data, finnhub_data, 
+                                                 alpha_vantage_data)
         return jsonify(aggregated_data), 200
     else:
-        return jsonify({"error": "Failed to fetch data from one or more sources"}), 500
+        return jsonify({"error": "Failed to fetch data from one or more sources"}),
+        500
