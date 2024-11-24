@@ -1,10 +1,20 @@
 # TODO: Implement a more sophisticated aggregation algorithm
 
-def aggregate_data_naively(yahoo_data, finnhub_data, alpha_vantage_data):
+from typing import List, Dict, Any
 
-    aggregated_data = {
-        "yahoo": yahoo_data,
-        "finnhub": finnhub_data,
-        "alpha_vantage": alpha_vantage_data
-    }
+def aggregate_data_naively(data_sources: List[Any], source_names: List[str]) -> Dict[str, Any]:
+    """
+    Aggregates data from multiple sources into a dictionary using provided source names as keys.
+
+    Args:
+        data_sources (List[Any]): A list of data sources to be aggregated.
+        source_names (List[str]): A list of names corresponding to each data source.
+
+    Returns:
+        Dict[str, Any]: A dictionary where keys are source names and values are the corresponding data sources.
+    """
+
+    aggregated_data = {}
+    for source, name in zip(data_sources, source_names):
+        aggregated_data[name] = source
     return aggregated_data
