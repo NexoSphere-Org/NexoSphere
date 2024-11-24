@@ -106,7 +106,7 @@ def fetch_alpha_vantage_data(ticker, api_key):
     """
 
     url = ("https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&"+
-           f"symbol={ticker}&interval=1min&apikey={api_key}")
+           f"outputsize=compact&symbol={ticker}&interval=1min&apikey={api_key}")
     headers = {"User-Agent": "Mozilla/5.0"}
     response = requests.get(url, headers=headers, timeout=10)
     if response.status_code == 200:
@@ -135,12 +135,10 @@ def fetch_polygon_data(ticker, api_key):
         >>>    print(data)
     """
 
-    yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
-    today = datetime.datetime.now()
+    yesterday = datetime.datetime.now() - datetime.timedelta(days=2)
+    today = datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
     yesterday_str = yesterday.strftime('%Y-%m-%d')
     today_str = today.strftime('%Y-%m-%d')
-    # url = (f"https://api.polygon.io/v1/open-close/{ticker}/{date_str}?" +
-    #       f"adjusted=true&apiKey={api_key}")
     url = (f"https://api.polygon.io/v2/aggs/ticker/{ticker}/range/1/minute/" +
            f"{yesterday_str}/{today_str}?adjusted=true&sort=asc&apiKey={api_key}")
     headers = {"User-Agent": "Mozilla/5.0"}
