@@ -1,0 +1,220 @@
+{
+    "swagger": "2.0",
+    "basePath": "/",
+    "paths": {
+        "/sentiment/get-news": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "Fetch news for a given stock ticker symbol and date range",
+                "operationId": "get_news",
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "required": true,
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/News"
+                        }
+                    }
+                ],
+                "tags": [
+                    "sentiment"
+                ]
+            }
+        },
+        "/stock_prices/getStockPrices": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "Fetch stock prices for a given ticker symbol",
+                "operationId": "get_stock_prices",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "description": "The stock ticker symbol",
+                        "name": "ticker",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "stock_prices"
+                ]
+            }
+        },
+        "/tickers/createTicker": {
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "Create a new ticker for a user",
+                "operationId": "create_ticker",
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "required": true,
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/Ticker"
+                        }
+                    }
+                ],
+                "tags": [
+                    "tickers"
+                ]
+            }
+        },
+        "/tickers/deleteTicker": {
+            "delete": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "Delete a ticker for a user",
+                "operationId": "delete_ticker",
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "required": true,
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/Ticker"
+                        }
+                    }
+                ],
+                "tags": [
+                    "tickers"
+                ]
+            }
+        },
+        "/tickers/getTickers": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "Fetch tickers for a given user ID",
+                "operationId": "get_tickers",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "description": "The user ID",
+                        "name": "userId",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "tickers"
+                ]
+            }
+        },
+        "/tickers/updateTicker": {
+            "put": {
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                },
+                "summary": "Update a ticker for a user",
+                "operationId": "update_ticker",
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "required": true,
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/Ticker"
+                        }
+                    }
+                ],
+                "tags": [
+                    "tickers"
+                ]
+            }
+        }
+    },
+    "info": {
+        "title": "NexoSphere API",
+        "version": "1.0",
+        "description": "A simple NexoSphere API"
+    },
+    "produces": [
+        "application/json"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "tags": [
+        {
+            "name": "sentiment",
+            "description": "Sentiment operations"
+        },
+        {
+            "name": "tickers",
+            "description": "Ticker operations"
+        },
+        {
+            "name": "stock_prices",
+            "description": "Stock Price operations"
+        }
+    ],
+    "definitions": {
+        "News": {
+            "required": [
+                "date_end",
+                "date_start",
+                "ticker_symbol"
+            ],
+            "properties": {
+                "ticker_symbol": {
+                    "type": "string",
+                    "description": "The stock ticker symbol"
+                },
+                "date_start": {
+                    "type": "string",
+                    "description": "The start date for the news"
+                },
+                "date_end": {
+                    "type": "string",
+                    "description": "The end date for the news"
+                }
+            },
+            "type": "object"
+        },
+        "Ticker": {
+            "required": [
+                "ticker",
+                "user_id"
+            ],
+            "properties": {
+                "user_id": {
+                    "type": "integer",
+                    "description": "The user ID"
+                },
+                "ticker": {
+                    "type": "string",
+                    "description": "The stock ticker symbol"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "responses": {
+        "ParseError": {
+            "description": "When a mask can't be parsed"
+        },
+        "MaskError": {
+            "description": "When any error occurs on mask"
+        }
+    }
+}
