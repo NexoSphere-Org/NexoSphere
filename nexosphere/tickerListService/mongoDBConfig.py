@@ -1,7 +1,11 @@
 import pymongo
+import os
+from dotenv import load_dotenv
+
 
 def mongoConnection():
-    client = pymongo.MongoClient("mongodb+srv://baruanishant97:Abcd1234@cluster0.d0ttz.mongodb.net/")
+    load_dotenv()
+    client = pymongo.MongoClient(os.getenv("MONGO_URL"))
 
     db = client["StockPrice"]
     userCollection = db["UserData"]

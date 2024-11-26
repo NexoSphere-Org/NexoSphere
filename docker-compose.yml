@@ -9,14 +9,5 @@ services:
       #   GITHUB_USERNAME: ${GITHUB_USERNAME}
       #   GITHUB_TOKEN: ${GITHUB_TOKEN}
     ports:
-      - "8080:9874"
-      - "443:443"
-    command: python3 main.py
-    # command: tail -f /dev/null
-
-  # mongo:
-  #   image: mongo
-  #   ports:
-  #     - "27017:27017"
-  #   env_file:
-  #     - .env
+      - "8081:5001" #backend
+      - "8080:8501" #frontend

@@ -74,10 +74,12 @@ jobs:
     - name: Deploy to EC2
       env:
         INSTANCE_IP: ${{ env.instance_ip }}
-        SSH_PRIVATE_KEY: ${{ secrets.AWS_SSH_PRIVATE_KEY }}  # Ensure you have the private key as a secret
+        SSH_PRIVATE_KEY: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
+        ENV_FILE: ${{ secrets.ENV_FILE }}
       run: |
         echo "Deploying to EC2 instance at IP: $INSTANCE_IP"
 
+        echo "$ENV_FILE" > env
         echo "$SSH_PRIVATE_KEY" > temp_key.pem
         chmod 400 temp_key.pem
 
@@ -88,11 +90,15 @@ jobs:
         # SSH into the EC2 instance and build & run the Docker container
         ssh -o StrictHostKeyChecking=no -i temp_key.pem ubuntu@$INSTANCE_IP << 'EOF'
           cd /home/ubuntu/app/
+          sudo mv env .env
           sudo snap install docker
           # Run the Docker container using Docker Compose
           sleep 5
           sudo docker-compose up -d
+          rm temp_key.pem  # Clean up the temporary file
+          rm .env #clean up the env file
         EOF
 
         rm temp_key.pem  # Clean up the temporary file
+        rm env #clean up the env file
 
