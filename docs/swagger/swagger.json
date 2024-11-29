@@ -1,0 +1,366 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "NexoSphere API",
+    "description": "A simple NexoSphere API",
+    "version": "1.0-oas3"
+  },
+  "servers": [
+    {
+      "url": "http://ec2-35-153-83-207.compute-1.amazonaws.com:8081"
+    }
+  ],
+  "tags": [
+    {
+      "name": "sentiment",
+      "description": "Sentiment operations"
+    },
+    {
+      "name": "tickers",
+      "description": "Ticker operations"
+    },
+    {
+      "name": "stock_prices",
+      "description": "Stock Price operations"
+    }
+  ],
+  "paths": {
+    "/get-news": {
+      "get": {
+        "tags": [
+          "sentiment"
+        ],
+        "summary": "Fetch news for a given stock ticker symbol and date range",
+        "operationId": "get_news",
+        "parameters": [
+          {
+            "name": "ticker_symbol",
+            "in": "query",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_start",
+            "in": "query",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_end",
+            "in": "query",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewsData"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stockPrice/{ticker}": {
+      "get": {
+        "tags": [
+          "stock_prices"
+        ],
+        "summary": "Fetch stock prices for a given ticker symbol",
+        "operationId": "get_stock_prices",
+        "parameters": [
+          {
+            "name": "ticker",
+            "in": "path",
+            "description": "The stock ticker symbol",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/createTicker": {
+      "post": {
+        "tags": [
+          "tickers"
+        ],
+        "summary": "Create a new ticker for a user",
+        "operationId": "create_ticker",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ticker",
+            "in": "query",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/deleteTicker": {
+      "delete": {
+        "tags": [
+          "tickers"
+        ],
+        "summary": "Delete a ticker for a user",
+        "operationId": "delete_ticker",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ticker",
+            "in": "query",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/getTickers": {
+      "get": {
+        "tags": [
+          "tickers"
+        ],
+        "summary": "Fetch tickers for a given user ID",
+        "operationId": "get_tickers",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "description": "The user ID",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/updateTicker": {
+      "put": {
+        "tags": [
+          "tickers"
+        ],
+        "summary": "Update a ticker for a user",
+        "operationId": "update_ticker",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ticker",
+            "in": "query",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "NewsData": {
+        "required": [
+          "_id",
+          "date",
+          "link",
+          "sentiment",
+          "symbols",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "The id of the request"
+          },
+          "date": {
+            "type": "string",
+            "description": "The date of the news"
+          },
+          "title": {
+            "type": "string",
+            "description": "The title of the news"
+          },
+          "symbols": {
+            "type": "string",
+            "description": "The stock ticker symbols list"
+          },
+          "link": {
+            "type": "string",
+            "description": "The source of the news"
+          },
+          "sentiment": {
+            "$ref": "#/components/schemas/NewsData_sentiment"
+          },
+          "summarization": {
+            "type": "string",
+            "description": "The summary of the news"
+          }
+        }
+      },
+      "NewsData_sentiment": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "score": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          }
+        },
+        "description": "The sentiment analysis of the news"
+      }
+    },
+    "responses": {
+      "ParseError": {
+        "description": "When a mask can't be parsed"
+      },
+      "MaskError": {
+        "description": "When any error occurs on mask"
+      }
+    }
+  }
+}
