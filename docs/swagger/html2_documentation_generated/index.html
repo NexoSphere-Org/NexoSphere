@@ -689,8 +689,54 @@
   <script>
     // Script section to load models into a JS Var
     var defs = {}
-        defs["News"] = {"type":"object","required":["date_end","date_start","ticker_symbol"],"properties":{"ticker_symbol":{"type":"string","description":"The stock ticker symbol"},"date_start":{"type":"string","description":"The start date for the news"},"date_end":{"type":"string","description":"The end date for the news"}}};
-        defs["Ticker"] = {"type":"object","required":["ticker","user_id"],"properties":{"user_id":{"type":"integer","description":"The user ID"},"ticker":{"type":"string","description":"The stock ticker symbol"}}};
+            defs["NewsData"] = {
+  "required" : [ "_id", "date", "link", "sentiment", "symbols", "title" ],
+  "type" : "object",
+  "properties" : {
+    "_id" : {
+      "type" : "string",
+      "description" : "The id of the request"
+    },
+    "date" : {
+      "type" : "string",
+      "description" : "The date of the news"
+    },
+    "title" : {
+      "type" : "string",
+      "description" : "The title of the news"
+    },
+    "symbols" : {
+      "type" : "string",
+      "description" : "The stock ticker symbols list"
+    },
+    "link" : {
+      "type" : "string",
+      "description" : "The source of the news"
+    },
+    "sentiment" : {
+      "$ref" : "#/components/schemas/NewsData_sentiment"
+    },
+    "summarization" : {
+      "type" : "string",
+      "description" : "The summary of the news"
+    }
+  }
+};
+            defs["NewsData_sentiment"] = {
+  "type" : "object",
+  "properties" : {
+    "label" : {
+      "type" : "string"
+    },
+    "score" : {
+      "type" : "array",
+      "items" : {
+        "type" : "number"
+      }
+    }
+  },
+  "description" : "The sentiment analysis of the news"
+};
   </script>
 
   <div class="container-fluid">
@@ -741,7 +787,7 @@
         <div id="header">
           <div id="api-_">
             <h2 id="welcome-to-apidoc">API and SDK Documentation</h2>
-              <div class="app-desc">Version: 1.0</div>
+              <div class="app-desc">Version: 1.0-oas3</div>
             <hr>
             <div>A simple NexoSphere API</div>
           </div>
@@ -761,7 +807,7 @@
                         <p class="marked"></p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/sentiment/get-news</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/get-news</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -781,7 +827,9 @@
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Sentiment-getNews-0-curl">
-                            <pre class="prettyprint"><code class="language-bsh">curl -X GET "https://localhost/sentiment/get-news"</code></pre>
+                           <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+-H "Accept: application/json"\
+"http://ec2-35-153-83-207.compute-1.amazonaws.com:8081/get-news?ticker_symbol=&date_start=&date_end="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Sentiment-getNews-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -797,9 +845,12 @@ public class SentimentApiExample {
     public static void main(String[] args) {
         
         SentimentApi apiInstance = new SentimentApi();
-        News payload = ; // News | 
+        String tickerSymbol = tickerSymbol_example; // String | 
+        String dateStart = dateStart_example; // String | 
+        String dateEnd = dateEnd_example; // String | 
         try {
-            apiInstance.getNews(payload);
+            NewsData result = apiInstance.getNews(tickerSymbol, dateStart, dateEnd);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling SentimentApi#getNews");
             e.printStackTrace();
@@ -815,9 +866,12 @@ public class SentimentApiExample {
 
     public static void main(String[] args) {
         SentimentApi apiInstance = new SentimentApi();
-        News payload = ; // News | 
+        String tickerSymbol = tickerSymbol_example; // String | 
+        String dateStart = dateStart_example; // String | 
+        String dateEnd = dateEnd_example; // String | 
         try {
-            apiInstance.getNews(payload);
+            NewsData result = apiInstance.getNews(tickerSymbol, dateStart, dateEnd);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling SentimentApi#getNews");
             e.printStackTrace();
@@ -830,13 +884,20 @@ public class SentimentApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-Sentiment-getNews-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">News *payload = ; // 
+                              <pre class="prettyprint"><code class="language-cpp">String *tickerSymbol = tickerSymbol_example; // 
+String *dateStart = dateStart_example; // 
+String *dateEnd = dateEnd_example; // 
 
 SentimentApi *apiInstance = [[SentimentApi alloc] init];
 
 // Fetch news for a given stock ticker symbol and date range
-[apiInstance getNewsWith:payload
-              completionHandler: ^(NSError* error) {
+[apiInstance getNewsWith:tickerSymbol
+    dateStart:dateStart
+    dateEnd:dateEnd
+              completionHandler: ^(NewsData output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
                             if (error) {
                                 NSLog(@"Error: %@", error);
                             }
@@ -848,18 +909,18 @@ SentimentApi *apiInstance = [[SentimentApi alloc] init];
                               <pre class="prettyprint"><code class="language-js">var NexoSphereApi = require('nexo_sphere_api');
 
 var api = new NexoSphereApi.SentimentApi()
-
-var payload = ; // {News} 
-
+var tickerSymbol = tickerSymbol_example; // {{String}} 
+var dateStart = dateStart_example; // {{String}} 
+var dateEnd = dateEnd_example; // {{String}} 
 
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.getNews(payload, callback);
+api.getNews(tickerSymbol, dateStart, dateEnd, callback);
 </code></pre>
                             </div>
 
@@ -879,14 +940,17 @@ namespace Example
     {
         public void main()
         {
-            
+
             var apiInstance = new SentimentApi();
-            var payload = new News(); // News | 
+            var tickerSymbol = tickerSymbol_example;  // String | 
+            var dateStart = dateStart_example;  // String | 
+            var dateEnd = dateEnd_example;  // String | 
 
             try
             {
                 // Fetch news for a given stock ticker symbol and date range
-                apiInstance.getNews(payload);
+                NewsData result = apiInstance.getNews(tickerSymbol, dateStart, dateEnd);
+                Debug.WriteLine(result);
             }
             catch (Exception e)
             {
@@ -902,11 +966,14 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-$api_instance = new Swagger\Client\Api\SentimentApi();
-$payload = ; // News | 
+$api_instance = new Swagger\Client\ApiSentimentApi();
+$tickerSymbol = tickerSymbol_example; // String | 
+$dateStart = dateStart_example; // String | 
+$dateEnd = dateEnd_example; // String | 
 
 try {
-    $api_instance->getNews($payload);
+    $result = $api_instance->getNews($tickerSymbol, $dateStart, $dateEnd);
+    print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling SentimentApi->getNews: ', $e->getMessage(), PHP_EOL;
 }
@@ -919,10 +986,13 @@ use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::SentimentApi;
 
 my $api_instance = WWW::SwaggerClient::SentimentApi->new();
-my $payload = WWW::SwaggerClient::Object::News->new(); # News | 
+my $tickerSymbol = tickerSymbol_example; # String | 
+my $dateStart = dateStart_example; # String | 
+my $dateEnd = dateEnd_example; # String | 
 
 eval { 
-    $api_instance->getNews(payload => $payload);
+    my $result = $api_instance->getNews(tickerSymbol => $tickerSymbol, dateStart => $dateStart, dateEnd => $dateEnd);
+    print Dumper($result);
 };
 if ($@) {
     warn "Exception when calling SentimentApi->getNews: $@\n";
@@ -938,11 +1008,14 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = swagger_client.SentimentApi()
-payload =  # News | 
+tickerSymbol = tickerSymbol_example # String | 
+dateStart = dateStart_example # String | 
+dateEnd = dateEnd_example # String | 
 
 try: 
     # Fetch news for a given stock ticker symbol and date range
-    api_instance.get_news(payload)
+    api_response = api_instance.get_news(tickerSymbol, dateStart, dateEnd)
+    pprint(api_response)
 except ApiException as e:
     print("Exception when calling SentimentApi->getNews: %s\n" % e)</code></pre>
                             </div>
@@ -952,56 +1025,120 @@ except ApiException as e:
 
 
 
-                            <div class="methodsubtabletitle">Body parameters</div>
+
+
+                            <div class="methodsubtabletitle">Query parameters</div>
                             <table id="methodsubtable">
                               <tr>
                                 <th width="150px">Name</th>
                                 <th>Description</th>
                               </tr>
-                                <tr><td style="width:150px;">payload <span style="color:red;">*</span></td>
+                                <tr><td style="width:150px;">ticker_symbol*</td>
                                 <td>
                                 
                                 
-                                <script>
-                                $(document).ready(function() {
-                                  var schemaWrapper = {
-  "in" : "body",
-  "name" : "payload",
-  "required" : true,
-  "schema" : {
-    "$ref" : "#/definitions/News"
-  }
-};
-                                  var schema = schemaWrapper.schema;
-                                  if (schema.$ref != null) {
-                                    schema = defsParser.$refs.get(schema.$ref);
-                                  } else {
-                                    schemaWrapper.definitions = Object.assign({}, defs);
-                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                      console.log(err);
-                                    });
-                                  }
+                                    <div id="d2e199_getNews_tickerSymbol">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    String
+                                                </span>
                                 
-                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
-                                  var result = $('#d2e199_getNews_payload');
-                                  result.empty();
-                                  result.append(view.render());
-                                });
-                                </script>
-                                <div id="d2e199_getNews_payload"></div>
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                                <tr><td style="width:150px;">date_start*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_getNews_dateStart">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    String
+                                                </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                                <tr><td style="width:150px;">date_end*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_getNews_dateEnd">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    String
+                                                </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
                                 </td>
                                 </tr>
                             </table>
-
-
 
                           <h2>Responses</h2>
                             <h3> Status: 200 - Success </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-getNews-200-schema">Schema</a>
+                                </li>
+
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-getNews-200-schema">
+                                  <div id='responses-getNews-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Success",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/NewsData"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-getNews-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-getNews-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-getNews-200-schema-data' type='hidden' value=''></input>
+                                </div>
                             </div>
 
                         </article>
@@ -1022,7 +1159,7 @@ except ApiException as e:
                         <p class="marked"></p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/stock_prices/getStockPrices</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/stockPrice/{ticker}</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -1042,7 +1179,9 @@ except ApiException as e:
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-StockPrices-getStockPrices-0-curl">
-                            <pre class="prettyprint"><code class="language-bsh">curl -X GET "https://localhost/stock_prices/getStockPrices?ticker="</code></pre>
+                           <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+-H "Accept: application/json"\
+"http://ec2-35-153-83-207.compute-1.amazonaws.com:8081/stockPrice/{ticker}?start_date=&end_date="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-StockPrices-getStockPrices-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -1059,8 +1198,11 @@ public class StockPricesApiExample {
         
         StockPricesApi apiInstance = new StockPricesApi();
         String ticker = ticker_example; // String | The stock ticker symbol
+        String startDate = startDate_example; // String | 
+        String endDate = endDate_example; // String | 
         try {
-            apiInstance.getStockPrices(ticker);
+            Object result = apiInstance.getStockPrices(ticker, startDate, endDate);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling StockPricesApi#getStockPrices");
             e.printStackTrace();
@@ -1077,8 +1219,11 @@ public class StockPricesApiExample {
     public static void main(String[] args) {
         StockPricesApi apiInstance = new StockPricesApi();
         String ticker = ticker_example; // String | The stock ticker symbol
+        String startDate = startDate_example; // String | 
+        String endDate = endDate_example; // String | 
         try {
-            apiInstance.getStockPrices(ticker);
+            Object result = apiInstance.getStockPrices(ticker, startDate, endDate);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling StockPricesApi#getStockPrices");
             e.printStackTrace();
@@ -1091,13 +1236,20 @@ public class StockPricesApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-StockPrices-getStockPrices-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">String *ticker = ticker_example; // The stock ticker symbol (optional)
+                              <pre class="prettyprint"><code class="language-cpp">String *ticker = ticker_example; // The stock ticker symbol
+String *startDate = startDate_example; // 
+String *endDate = endDate_example; // 
 
 StockPricesApi *apiInstance = [[StockPricesApi alloc] init];
 
 // Fetch stock prices for a given ticker symbol
 [apiInstance getStockPricesWith:ticker
-              completionHandler: ^(NSError* error) {
+    startDate:startDate
+    endDate:endDate
+              completionHandler: ^(Object output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
                             if (error) {
                                 NSLog(@"Error: %@", error);
                             }
@@ -1109,19 +1261,18 @@ StockPricesApi *apiInstance = [[StockPricesApi alloc] init];
                               <pre class="prettyprint"><code class="language-js">var NexoSphereApi = require('nexo_sphere_api');
 
 var api = new NexoSphereApi.StockPricesApi()
-
-var opts = { 
-  'ticker': ticker_example // {String} The stock ticker symbol
-};
+var ticker = ticker_example; // {{String}} The stock ticker symbol
+var startDate = startDate_example; // {{String}} 
+var endDate = endDate_example; // {{String}} 
 
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.getStockPrices(opts, callback);
+api.getStockPrices(ticker, startDate, endDate, callback);
 </code></pre>
                             </div>
 
@@ -1141,14 +1292,17 @@ namespace Example
     {
         public void main()
         {
-            
+
             var apiInstance = new StockPricesApi();
-            var ticker = ticker_example;  // String | The stock ticker symbol (optional) 
+            var ticker = ticker_example;  // String | The stock ticker symbol
+            var startDate = startDate_example;  // String | 
+            var endDate = endDate_example;  // String | 
 
             try
             {
                 // Fetch stock prices for a given ticker symbol
-                apiInstance.getStockPrices(ticker);
+                Object result = apiInstance.getStockPrices(ticker, startDate, endDate);
+                Debug.WriteLine(result);
             }
             catch (Exception e)
             {
@@ -1164,11 +1318,14 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-$api_instance = new Swagger\Client\Api\StockPricesApi();
+$api_instance = new Swagger\Client\ApiStockPricesApi();
 $ticker = ticker_example; // String | The stock ticker symbol
+$startDate = startDate_example; // String | 
+$endDate = endDate_example; // String | 
 
 try {
-    $api_instance->getStockPrices($ticker);
+    $result = $api_instance->getStockPrices($ticker, $startDate, $endDate);
+    print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling StockPricesApi->getStockPrices: ', $e->getMessage(), PHP_EOL;
 }
@@ -1182,9 +1339,12 @@ use WWW::SwaggerClient::StockPricesApi;
 
 my $api_instance = WWW::SwaggerClient::StockPricesApi->new();
 my $ticker = ticker_example; # String | The stock ticker symbol
+my $startDate = startDate_example; # String | 
+my $endDate = endDate_example; # String | 
 
 eval { 
-    $api_instance->getStockPrices(ticker => $ticker);
+    my $result = $api_instance->getStockPrices(ticker => $ticker, startDate => $startDate, endDate => $endDate);
+    print Dumper($result);
 };
 if ($@) {
     warn "Exception when calling StockPricesApi->getStockPrices: $@\n";
@@ -1200,11 +1360,14 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = swagger_client.StockPricesApi()
-ticker = ticker_example # String | The stock ticker symbol (optional)
+ticker = ticker_example # String | The stock ticker symbol
+startDate = startDate_example # String | 
+endDate = endDate_example # String | 
 
 try: 
     # Fetch stock prices for a given ticker symbol
-    api_instance.get_stock_prices(ticker=ticker)
+    api_response = api_instance.get_stock_prices(ticker, startDate, endDate)
+    pprint(api_response)
 except ApiException as e:
     print("Exception when calling StockPricesApi->getStockPrices: %s\n" % e)</code></pre>
                             </div>
@@ -1212,6 +1375,35 @@ except ApiException as e:
 
                           <h2>Parameters</h2>
 
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">ticker*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_getStockPrices_ticker">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      String
+                                                  </span>
+                                  
+                                                      <div class="inner description">
+                                                          The stock ticker symbol
+                                                      </div>
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
 
 
 
@@ -1222,22 +1414,41 @@ except ApiException as e:
                                 <th width="150px">Name</th>
                                 <th>Description</th>
                               </tr>
-                                <tr><td style="width:150px;">ticker</td>
+                                <tr><td style="width:150px;">start_date*</td>
                                 <td>
                                 
                                 
-                                    <div id="d2e199_getStockPrices_ticker">
+                                    <div id="d2e199_getStockPrices_startDate">
                                         <div class="json-schema-view">
                                             <div class="primitive">
                                                 <span class="type">
                                                     String
                                                 </span>
                                 
-                                                    <div class="inner description">
-                                                        The stock ticker symbol
-                                                    </div>
                                             </div>
-                                                                        </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                                <tr><td style="width:150px;">end_date*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_getStockPrices_endDate">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    String
+                                                </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
                                     </div>
                                 </td>
                                 </tr>
@@ -1247,9 +1458,50 @@ except ApiException as e:
                             <h3> Status: 200 - Success </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-getStockPrices-200-schema">Schema</a>
+                                </li>
+
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-getStockPrices-200-schema">
+                                  <div id='responses-getStockPrices-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Success",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "type" : "object",
+        "x-content-type" : "application/json"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-getStockPrices-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-getStockPrices-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-getStockPrices-200-schema-data' type='hidden' value=''></input>
+                                </div>
                             </div>
 
                         </article>
@@ -1270,7 +1522,7 @@ except ApiException as e:
                         <p class="marked"></p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/tickers/createTicker</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/user/createTicker</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -1290,7 +1542,9 @@ except ApiException as e:
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Tickers-createTicker-0-curl">
-                            <pre class="prettyprint"><code class="language-bsh">curl -X POST "https://localhost/tickers/createTicker"</code></pre>
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+-H "Accept: application/json"\
+"http://ec2-35-153-83-207.compute-1.amazonaws.com:8081/user/createTicker?user_id=&ticker="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Tickers-createTicker-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -1306,9 +1560,11 @@ public class TickersApiExample {
     public static void main(String[] args) {
         
         TickersApi apiInstance = new TickersApi();
-        Ticker payload = ; // Ticker | 
+        String userId = userId_example; // String | 
+        String ticker = ticker_example; // String | 
         try {
-            apiInstance.createTicker(payload);
+            Object result = apiInstance.createTicker(userId, ticker);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling TickersApi#createTicker");
             e.printStackTrace();
@@ -1324,9 +1580,11 @@ public class TickersApiExample {
 
     public static void main(String[] args) {
         TickersApi apiInstance = new TickersApi();
-        Ticker payload = ; // Ticker | 
+        String userId = userId_example; // String | 
+        String ticker = ticker_example; // String | 
         try {
-            apiInstance.createTicker(payload);
+            Object result = apiInstance.createTicker(userId, ticker);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling TickersApi#createTicker");
             e.printStackTrace();
@@ -1339,13 +1597,18 @@ public class TickersApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-Tickers-createTicker-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Ticker *payload = ; // 
+                              <pre class="prettyprint"><code class="language-cpp">String *userId = userId_example; // 
+String *ticker = ticker_example; // 
 
 TickersApi *apiInstance = [[TickersApi alloc] init];
 
 // Create a new ticker for a user
-[apiInstance createTickerWith:payload
-              completionHandler: ^(NSError* error) {
+[apiInstance createTickerWith:userId
+    ticker:ticker
+              completionHandler: ^(Object output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
                             if (error) {
                                 NSLog(@"Error: %@", error);
                             }
@@ -1357,18 +1620,17 @@ TickersApi *apiInstance = [[TickersApi alloc] init];
                               <pre class="prettyprint"><code class="language-js">var NexoSphereApi = require('nexo_sphere_api');
 
 var api = new NexoSphereApi.TickersApi()
-
-var payload = ; // {Ticker} 
-
+var userId = userId_example; // {{String}} 
+var ticker = ticker_example; // {{String}} 
 
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.createTicker(payload, callback);
+api.createTicker(userId, ticker, callback);
 </code></pre>
                             </div>
 
@@ -1388,14 +1650,16 @@ namespace Example
     {
         public void main()
         {
-            
+
             var apiInstance = new TickersApi();
-            var payload = new Ticker(); // Ticker | 
+            var userId = userId_example;  // String | 
+            var ticker = ticker_example;  // String | 
 
             try
             {
                 // Create a new ticker for a user
-                apiInstance.createTicker(payload);
+                Object result = apiInstance.createTicker(userId, ticker);
+                Debug.WriteLine(result);
             }
             catch (Exception e)
             {
@@ -1411,11 +1675,13 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-$api_instance = new Swagger\Client\Api\TickersApi();
-$payload = ; // Ticker | 
+$api_instance = new Swagger\Client\ApiTickersApi();
+$userId = userId_example; // String | 
+$ticker = ticker_example; // String | 
 
 try {
-    $api_instance->createTicker($payload);
+    $result = $api_instance->createTicker($userId, $ticker);
+    print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling TickersApi->createTicker: ', $e->getMessage(), PHP_EOL;
 }
@@ -1428,10 +1694,12 @@ use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::TickersApi;
 
 my $api_instance = WWW::SwaggerClient::TickersApi->new();
-my $payload = WWW::SwaggerClient::Object::Ticker->new(); # Ticker | 
+my $userId = userId_example; # String | 
+my $ticker = ticker_example; # String | 
 
 eval { 
-    $api_instance->createTicker(payload => $payload);
+    my $result = $api_instance->createTicker(userId => $userId, ticker => $ticker);
+    print Dumper($result);
 };
 if ($@) {
     warn "Exception when calling TickersApi->createTicker: $@\n";
@@ -1447,11 +1715,13 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = swagger_client.TickersApi()
-payload =  # Ticker | 
+userId = userId_example # String | 
+ticker = ticker_example # String | 
 
 try: 
     # Create a new ticker for a user
-    api_instance.create_ticker(payload)
+    api_response = api_instance.create_ticker(userId, ticker)
+    pprint(api_response)
 except ApiException as e:
     print("Exception when calling TickersApi->createTicker: %s\n" % e)</code></pre>
                             </div>
@@ -1461,56 +1731,102 @@ except ApiException as e:
 
 
 
-                            <div class="methodsubtabletitle">Body parameters</div>
+
+
+                            <div class="methodsubtabletitle">Query parameters</div>
                             <table id="methodsubtable">
                               <tr>
                                 <th width="150px">Name</th>
                                 <th>Description</th>
                               </tr>
-                                <tr><td style="width:150px;">payload <span style="color:red;">*</span></td>
+                                <tr><td style="width:150px;">user_id*</td>
                                 <td>
                                 
                                 
-                                <script>
-                                $(document).ready(function() {
-                                  var schemaWrapper = {
-  "in" : "body",
-  "name" : "payload",
-  "required" : true,
-  "schema" : {
-    "$ref" : "#/definitions/Ticker"
-  }
-};
-                                  var schema = schemaWrapper.schema;
-                                  if (schema.$ref != null) {
-                                    schema = defsParser.$refs.get(schema.$ref);
-                                  } else {
-                                    schemaWrapper.definitions = Object.assign({}, defs);
-                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                      console.log(err);
-                                    });
-                                  }
+                                    <div id="d2e199_createTicker_userId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    String
+                                                </span>
                                 
-                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
-                                  var result = $('#d2e199_createTicker_payload');
-                                  result.empty();
-                                  result.append(view.render());
-                                });
-                                </script>
-                                <div id="d2e199_createTicker_payload"></div>
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                                <tr><td style="width:150px;">ticker*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_createTicker_ticker">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    String
+                                                </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
                                 </td>
                                 </tr>
                             </table>
-
-
 
                           <h2>Responses</h2>
                             <h3> Status: 200 - Success </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-createTicker-200-schema">Schema</a>
+                                </li>
+
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-createTicker-200-schema">
+                                  <div id='responses-createTicker-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Success",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "type" : "object",
+        "x-content-type" : "application/json"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-createTicker-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-createTicker-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-createTicker-200-schema-data' type='hidden' value=''></input>
+                                </div>
                             </div>
 
                         </article>
@@ -1528,7 +1844,7 @@ except ApiException as e:
                         <p class="marked"></p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="delete"><code><span class="pln">/tickers/deleteTicker</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="delete"><code><span class="pln">/user/deleteTicker</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -1548,7 +1864,9 @@ except ApiException as e:
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Tickers-deleteTicker-0-curl">
-                            <pre class="prettyprint"><code class="language-bsh">curl -X DELETE "https://localhost/tickers/deleteTicker"</code></pre>
+                           <pre class="prettyprint"><code class="language-bsh">curl -X DELETE\
+-H "Accept: application/json"\
+"http://ec2-35-153-83-207.compute-1.amazonaws.com:8081/user/deleteTicker?user_id=&ticker="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Tickers-deleteTicker-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -1564,9 +1882,11 @@ public class TickersApiExample {
     public static void main(String[] args) {
         
         TickersApi apiInstance = new TickersApi();
-        Ticker payload = ; // Ticker | 
+        String userId = userId_example; // String | 
+        String ticker = ticker_example; // String | 
         try {
-            apiInstance.deleteTicker(payload);
+            Object result = apiInstance.deleteTicker(userId, ticker);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling TickersApi#deleteTicker");
             e.printStackTrace();
@@ -1582,9 +1902,11 @@ public class TickersApiExample {
 
     public static void main(String[] args) {
         TickersApi apiInstance = new TickersApi();
-        Ticker payload = ; // Ticker | 
+        String userId = userId_example; // String | 
+        String ticker = ticker_example; // String | 
         try {
-            apiInstance.deleteTicker(payload);
+            Object result = apiInstance.deleteTicker(userId, ticker);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling TickersApi#deleteTicker");
             e.printStackTrace();
@@ -1597,13 +1919,18 @@ public class TickersApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-Tickers-deleteTicker-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Ticker *payload = ; // 
+                              <pre class="prettyprint"><code class="language-cpp">String *userId = userId_example; // 
+String *ticker = ticker_example; // 
 
 TickersApi *apiInstance = [[TickersApi alloc] init];
 
 // Delete a ticker for a user
-[apiInstance deleteTickerWith:payload
-              completionHandler: ^(NSError* error) {
+[apiInstance deleteTickerWith:userId
+    ticker:ticker
+              completionHandler: ^(Object output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
                             if (error) {
                                 NSLog(@"Error: %@", error);
                             }
@@ -1615,18 +1942,17 @@ TickersApi *apiInstance = [[TickersApi alloc] init];
                               <pre class="prettyprint"><code class="language-js">var NexoSphereApi = require('nexo_sphere_api');
 
 var api = new NexoSphereApi.TickersApi()
-
-var payload = ; // {Ticker} 
-
+var userId = userId_example; // {{String}} 
+var ticker = ticker_example; // {{String}} 
 
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.deleteTicker(payload, callback);
+api.deleteTicker(userId, ticker, callback);
 </code></pre>
                             </div>
 
@@ -1646,14 +1972,16 @@ namespace Example
     {
         public void main()
         {
-            
+
             var apiInstance = new TickersApi();
-            var payload = new Ticker(); // Ticker | 
+            var userId = userId_example;  // String | 
+            var ticker = ticker_example;  // String | 
 
             try
             {
                 // Delete a ticker for a user
-                apiInstance.deleteTicker(payload);
+                Object result = apiInstance.deleteTicker(userId, ticker);
+                Debug.WriteLine(result);
             }
             catch (Exception e)
             {
@@ -1669,11 +1997,13 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-$api_instance = new Swagger\Client\Api\TickersApi();
-$payload = ; // Ticker | 
+$api_instance = new Swagger\Client\ApiTickersApi();
+$userId = userId_example; // String | 
+$ticker = ticker_example; // String | 
 
 try {
-    $api_instance->deleteTicker($payload);
+    $result = $api_instance->deleteTicker($userId, $ticker);
+    print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling TickersApi->deleteTicker: ', $e->getMessage(), PHP_EOL;
 }
@@ -1686,10 +2016,12 @@ use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::TickersApi;
 
 my $api_instance = WWW::SwaggerClient::TickersApi->new();
-my $payload = WWW::SwaggerClient::Object::Ticker->new(); # Ticker | 
+my $userId = userId_example; # String | 
+my $ticker = ticker_example; # String | 
 
 eval { 
-    $api_instance->deleteTicker(payload => $payload);
+    my $result = $api_instance->deleteTicker(userId => $userId, ticker => $ticker);
+    print Dumper($result);
 };
 if ($@) {
     warn "Exception when calling TickersApi->deleteTicker: $@\n";
@@ -1705,11 +2037,13 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = swagger_client.TickersApi()
-payload =  # Ticker | 
+userId = userId_example # String | 
+ticker = ticker_example # String | 
 
 try: 
     # Delete a ticker for a user
-    api_instance.delete_ticker(payload)
+    api_response = api_instance.delete_ticker(userId, ticker)
+    pprint(api_response)
 except ApiException as e:
     print("Exception when calling TickersApi->deleteTicker: %s\n" % e)</code></pre>
                             </div>
@@ -1719,56 +2053,102 @@ except ApiException as e:
 
 
 
-                            <div class="methodsubtabletitle">Body parameters</div>
+
+
+                            <div class="methodsubtabletitle">Query parameters</div>
                             <table id="methodsubtable">
                               <tr>
                                 <th width="150px">Name</th>
                                 <th>Description</th>
                               </tr>
-                                <tr><td style="width:150px;">payload <span style="color:red;">*</span></td>
+                                <tr><td style="width:150px;">user_id*</td>
                                 <td>
                                 
                                 
-                                <script>
-                                $(document).ready(function() {
-                                  var schemaWrapper = {
-  "in" : "body",
-  "name" : "payload",
-  "required" : true,
-  "schema" : {
-    "$ref" : "#/definitions/Ticker"
-  }
-};
-                                  var schema = schemaWrapper.schema;
-                                  if (schema.$ref != null) {
-                                    schema = defsParser.$refs.get(schema.$ref);
-                                  } else {
-                                    schemaWrapper.definitions = Object.assign({}, defs);
-                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                      console.log(err);
-                                    });
-                                  }
+                                    <div id="d2e199_deleteTicker_userId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    String
+                                                </span>
                                 
-                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
-                                  var result = $('#d2e199_deleteTicker_payload');
-                                  result.empty();
-                                  result.append(view.render());
-                                });
-                                </script>
-                                <div id="d2e199_deleteTicker_payload"></div>
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                                <tr><td style="width:150px;">ticker*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_deleteTicker_ticker">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    String
+                                                </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
                                 </td>
                                 </tr>
                             </table>
-
-
 
                           <h2>Responses</h2>
                             <h3> Status: 200 - Success </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-deleteTicker-200-schema">Schema</a>
+                                </li>
+
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-deleteTicker-200-schema">
+                                  <div id='responses-deleteTicker-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Success",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "type" : "object",
+        "x-content-type" : "application/json"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-deleteTicker-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-deleteTicker-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-deleteTicker-200-schema-data' type='hidden' value=''></input>
+                                </div>
                             </div>
 
                         </article>
@@ -1786,7 +2166,7 @@ except ApiException as e:
                         <p class="marked"></p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/tickers/getTickers</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/user/getTickers</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -1806,7 +2186,9 @@ except ApiException as e:
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Tickers-getTickers-0-curl">
-                            <pre class="prettyprint"><code class="language-bsh">curl -X GET "https://localhost/tickers/getTickers?userId="</code></pre>
+                           <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+-H "Accept: application/json"\
+"http://ec2-35-153-83-207.compute-1.amazonaws.com:8081/user/getTickers?userId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Tickers-getTickers-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -1824,7 +2206,8 @@ public class TickersApiExample {
         TickersApi apiInstance = new TickersApi();
         String userId = userId_example; // String | The user ID
         try {
-            apiInstance.getTickers(userId);
+            Object result = apiInstance.getTickers(userId);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling TickersApi#getTickers");
             e.printStackTrace();
@@ -1842,7 +2225,8 @@ public class TickersApiExample {
         TickersApi apiInstance = new TickersApi();
         String userId = userId_example; // String | The user ID
         try {
-            apiInstance.getTickers(userId);
+            Object result = apiInstance.getTickers(userId);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling TickersApi#getTickers");
             e.printStackTrace();
@@ -1855,13 +2239,16 @@ public class TickersApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-Tickers-getTickers-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">String *userId = userId_example; // The user ID (optional)
+                              <pre class="prettyprint"><code class="language-cpp">String *userId = userId_example; // The user ID
 
 TickersApi *apiInstance = [[TickersApi alloc] init];
 
 // Fetch tickers for a given user ID
 [apiInstance getTickersWith:userId
-              completionHandler: ^(NSError* error) {
+              completionHandler: ^(Object output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
                             if (error) {
                                 NSLog(@"Error: %@", error);
                             }
@@ -1873,19 +2260,16 @@ TickersApi *apiInstance = [[TickersApi alloc] init];
                               <pre class="prettyprint"><code class="language-js">var NexoSphereApi = require('nexo_sphere_api');
 
 var api = new NexoSphereApi.TickersApi()
-
-var opts = { 
-  'userId': userId_example // {String} The user ID
-};
+var userId = userId_example; // {{String}} The user ID
 
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.getTickers(opts, callback);
+api.getTickers(userId, callback);
 </code></pre>
                             </div>
 
@@ -1905,14 +2289,15 @@ namespace Example
     {
         public void main()
         {
-            
+
             var apiInstance = new TickersApi();
-            var userId = userId_example;  // String | The user ID (optional) 
+            var userId = userId_example;  // String | The user ID
 
             try
             {
                 // Fetch tickers for a given user ID
-                apiInstance.getTickers(userId);
+                Object result = apiInstance.getTickers(userId);
+                Debug.WriteLine(result);
             }
             catch (Exception e)
             {
@@ -1928,11 +2313,12 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-$api_instance = new Swagger\Client\Api\TickersApi();
+$api_instance = new Swagger\Client\ApiTickersApi();
 $userId = userId_example; // String | The user ID
 
 try {
-    $api_instance->getTickers($userId);
+    $result = $api_instance->getTickers($userId);
+    print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling TickersApi->getTickers: ', $e->getMessage(), PHP_EOL;
 }
@@ -1948,7 +2334,8 @@ my $api_instance = WWW::SwaggerClient::TickersApi->new();
 my $userId = userId_example; # String | The user ID
 
 eval { 
-    $api_instance->getTickers(userId => $userId);
+    my $result = $api_instance->getTickers(userId => $userId);
+    print Dumper($result);
 };
 if ($@) {
     warn "Exception when calling TickersApi->getTickers: $@\n";
@@ -1964,11 +2351,12 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = swagger_client.TickersApi()
-userId = userId_example # String | The user ID (optional)
+userId = userId_example # String | The user ID
 
 try: 
     # Fetch tickers for a given user ID
-    api_instance.get_tickers(userId=userId)
+    api_response = api_instance.get_tickers(userId)
+    pprint(api_response)
 except ApiException as e:
     print("Exception when calling TickersApi->getTickers: %s\n" % e)</code></pre>
                             </div>
@@ -1986,7 +2374,7 @@ except ApiException as e:
                                 <th width="150px">Name</th>
                                 <th>Description</th>
                               </tr>
-                                <tr><td style="width:150px;">userId</td>
+                                <tr><td style="width:150px;">userId*</td>
                                 <td>
                                 
                                 
@@ -2001,7 +2389,10 @@ except ApiException as e:
                                                         The user ID
                                                     </div>
                                             </div>
-                                                                        </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
                                     </div>
                                 </td>
                                 </tr>
@@ -2011,9 +2402,50 @@ except ApiException as e:
                             <h3> Status: 200 - Success </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-getTickers-200-schema">Schema</a>
+                                </li>
+
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-getTickers-200-schema">
+                                  <div id='responses-getTickers-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Success",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "type" : "object",
+        "x-content-type" : "application/json"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-getTickers-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-getTickers-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-getTickers-200-schema-data' type='hidden' value=''></input>
+                                </div>
                             </div>
 
                         </article>
@@ -2031,7 +2463,7 @@ except ApiException as e:
                         <p class="marked"></p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="put"><code><span class="pln">/tickers/updateTicker</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="put"><code><span class="pln">/user/updateTicker</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
@@ -2051,7 +2483,9 @@ except ApiException as e:
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Tickers-updateTicker-0-curl">
-                            <pre class="prettyprint"><code class="language-bsh">curl -X PUT "https://localhost/tickers/updateTicker"</code></pre>
+                           <pre class="prettyprint"><code class="language-bsh">curl -X PUT\
+-H "Accept: application/json"\
+"http://ec2-35-153-83-207.compute-1.amazonaws.com:8081/user/updateTicker?user_id=&ticker="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Tickers-updateTicker-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -2067,9 +2501,11 @@ public class TickersApiExample {
     public static void main(String[] args) {
         
         TickersApi apiInstance = new TickersApi();
-        Ticker payload = ; // Ticker | 
+        String userId = userId_example; // String | 
+        String ticker = ticker_example; // String | 
         try {
-            apiInstance.updateTicker(payload);
+            Object result = apiInstance.updateTicker(userId, ticker);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling TickersApi#updateTicker");
             e.printStackTrace();
@@ -2085,9 +2521,11 @@ public class TickersApiExample {
 
     public static void main(String[] args) {
         TickersApi apiInstance = new TickersApi();
-        Ticker payload = ; // Ticker | 
+        String userId = userId_example; // String | 
+        String ticker = ticker_example; // String | 
         try {
-            apiInstance.updateTicker(payload);
+            Object result = apiInstance.updateTicker(userId, ticker);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling TickersApi#updateTicker");
             e.printStackTrace();
@@ -2100,13 +2538,18 @@ public class TickersApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-Tickers-updateTicker-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Ticker *payload = ; // 
+                              <pre class="prettyprint"><code class="language-cpp">String *userId = userId_example; // 
+String *ticker = ticker_example; // 
 
 TickersApi *apiInstance = [[TickersApi alloc] init];
 
 // Update a ticker for a user
-[apiInstance updateTickerWith:payload
-              completionHandler: ^(NSError* error) {
+[apiInstance updateTickerWith:userId
+    ticker:ticker
+              completionHandler: ^(Object output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
                             if (error) {
                                 NSLog(@"Error: %@", error);
                             }
@@ -2118,18 +2561,17 @@ TickersApi *apiInstance = [[TickersApi alloc] init];
                               <pre class="prettyprint"><code class="language-js">var NexoSphereApi = require('nexo_sphere_api');
 
 var api = new NexoSphereApi.TickersApi()
-
-var payload = ; // {Ticker} 
-
+var userId = userId_example; // {{String}} 
+var ticker = ticker_example; // {{String}} 
 
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.updateTicker(payload, callback);
+api.updateTicker(userId, ticker, callback);
 </code></pre>
                             </div>
 
@@ -2149,14 +2591,16 @@ namespace Example
     {
         public void main()
         {
-            
+
             var apiInstance = new TickersApi();
-            var payload = new Ticker(); // Ticker | 
+            var userId = userId_example;  // String | 
+            var ticker = ticker_example;  // String | 
 
             try
             {
                 // Update a ticker for a user
-                apiInstance.updateTicker(payload);
+                Object result = apiInstance.updateTicker(userId, ticker);
+                Debug.WriteLine(result);
             }
             catch (Exception e)
             {
@@ -2172,11 +2616,13 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-$api_instance = new Swagger\Client\Api\TickersApi();
-$payload = ; // Ticker | 
+$api_instance = new Swagger\Client\ApiTickersApi();
+$userId = userId_example; // String | 
+$ticker = ticker_example; // String | 
 
 try {
-    $api_instance->updateTicker($payload);
+    $result = $api_instance->updateTicker($userId, $ticker);
+    print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling TickersApi->updateTicker: ', $e->getMessage(), PHP_EOL;
 }
@@ -2189,10 +2635,12 @@ use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::TickersApi;
 
 my $api_instance = WWW::SwaggerClient::TickersApi->new();
-my $payload = WWW::SwaggerClient::Object::Ticker->new(); # Ticker | 
+my $userId = userId_example; # String | 
+my $ticker = ticker_example; # String | 
 
 eval { 
-    $api_instance->updateTicker(payload => $payload);
+    my $result = $api_instance->updateTicker(userId => $userId, ticker => $ticker);
+    print Dumper($result);
 };
 if ($@) {
     warn "Exception when calling TickersApi->updateTicker: $@\n";
@@ -2208,11 +2656,13 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = swagger_client.TickersApi()
-payload =  # Ticker | 
+userId = userId_example # String | 
+ticker = ticker_example # String | 
 
 try: 
     # Update a ticker for a user
-    api_instance.update_ticker(payload)
+    api_response = api_instance.update_ticker(userId, ticker)
+    pprint(api_response)
 except ApiException as e:
     print("Exception when calling TickersApi->updateTicker: %s\n" % e)</code></pre>
                             </div>
@@ -2222,56 +2672,102 @@ except ApiException as e:
 
 
 
-                            <div class="methodsubtabletitle">Body parameters</div>
+
+
+                            <div class="methodsubtabletitle">Query parameters</div>
                             <table id="methodsubtable">
                               <tr>
                                 <th width="150px">Name</th>
                                 <th>Description</th>
                               </tr>
-                                <tr><td style="width:150px;">payload <span style="color:red;">*</span></td>
+                                <tr><td style="width:150px;">user_id*</td>
                                 <td>
                                 
                                 
-                                <script>
-                                $(document).ready(function() {
-                                  var schemaWrapper = {
-  "in" : "body",
-  "name" : "payload",
-  "required" : true,
-  "schema" : {
-    "$ref" : "#/definitions/Ticker"
-  }
-};
-                                  var schema = schemaWrapper.schema;
-                                  if (schema.$ref != null) {
-                                    schema = defsParser.$refs.get(schema.$ref);
-                                  } else {
-                                    schemaWrapper.definitions = Object.assign({}, defs);
-                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                      console.log(err);
-                                    });
-                                  }
+                                    <div id="d2e199_updateTicker_userId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    String
+                                                </span>
                                 
-                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
-                                  var result = $('#d2e199_updateTicker_payload');
-                                  result.empty();
-                                  result.append(view.render());
-                                });
-                                </script>
-                                <div id="d2e199_updateTicker_payload"></div>
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                                <tr><td style="width:150px;">ticker*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_updateTicker_ticker">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    String
+                                                </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
                                 </td>
                                 </tr>
                             </table>
-
-
 
                           <h2>Responses</h2>
                             <h3> Status: 200 - Success </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-updateTicker-200-schema">Schema</a>
+                                </li>
+
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-updateTicker-200-schema">
+                                  <div id='responses-updateTicker-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Success",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "type" : "object",
+        "x-content-type" : "application/json"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-updateTicker-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-updateTicker-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-updateTicker-200-schema-data' type='hidden' value=''></input>
+                                </div>
                             </div>
 
                         </article>
@@ -3374,10 +3870,15 @@ except ApiException as e:
   
       _classCallCheck(this, JSONSchemaView);
   
-      this.schema = schema; //console.log(schema);
+      this.schema = schema;
       this.open = open;
       this.options = options;
       this.isCollapsed = open <= 0;
+  
+      if (this.schema.type == undefined && this.schema.$ref) {
+        const elements = this.schema.$ref.split('/');
+        this.schema = defs[elements.pop()];
+      }
   
       // if schema is an empty object which means any JOSN
       this.isAny = typeof schema === 'object' && !Array.isArray(schema) && !Object.keys(schema).filter(function (k) {
@@ -3387,7 +3888,7 @@ except ApiException as e:
       // Determine if a schema is an array
       this.isArray = !this.isAny && this.schema && this.schema.type === 'array';
   
-      this.isObject = this.schema && (this.schema.type === 'object' || this.schema.properties || this.schema.anyOf || this.schema.oneof || this.schema.allOf);
+      this.isObject = this.schema && (this.schema.type === 'object' || this.schema.properties || this.schema.allOf);
   
       // Determine if a schema is a primitive
       this.isPrimitive = !this.isAny && !this.isArray && !this.isObject;
@@ -3478,15 +3979,15 @@ except ApiException as e:
   
         this.element.innerHTML = this.template();
   
+        if (this.schema && this.schema.example) {
+          var exampleDiv = document.createElement('div');
+          exampleDiv.innerHTML = '<div style="display: block" class="example">\n          <span style="color: #808080" class="name">example: ' + this.schema.example + '</span>\n        </div>';
+          this.element.appendChild(exampleDiv.querySelector('.example'));
+        }
+  
         if (!this.schema) {
           return this.element;
         }
-  
-          if (this.schema && this.schema.example) {
-              var exampleDiv = document.createElement('div');
-              exampleDiv.innerHTML = '<div style="display: block" class="example">\n          <span style="color: #808080" class="name">example: ' + this.schema.example + '</span>\n        </div>';
-              this.element.appendChild(exampleDiv.querySelector('.example'));
-          }
   
         if (!this.isCollapsed) {
           this.appendChildren(this.element);
@@ -3521,7 +4022,13 @@ except ApiException as e:
         }
   
         if (this.isArray) {
-          var view = new JSONSchemaView(this.schema.items, Infinity);
+          var schemaItems = this.schema.items;
+          if (this.schema.items.$ref) {
+             var elements = this.schema.items.$ref.split('/');
+             var schemaName = elements.pop();
+             schemaItems = defs[schemaName];
+          }
+          var view = new JSONSchemaView(schemaItems, Infinity);
           inner.appendChild(view.render());
         }
   
@@ -4010,7 +4517,8 @@ except ApiException as e:
   </script>
   <script>
     var schemaWrapper = {};
-    schemaWrapper.definitions = defs;
+    schemaWrapper.components = {};
+    schemaWrapper.components.schemas = Object.assign({}, defs);
     defsParser = new $RefParser();
     defsParser.dereference(schemaWrapper).catch(function(err) {
       console.log(err);
