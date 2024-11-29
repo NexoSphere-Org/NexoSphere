@@ -1,4 +1,4 @@
-# NexoSphere
+# NexoSphere 👋
 
 NexoSphere is a cutting-edge project designed to revolutionize the way we analyze stock market news. By leveraging advanced sentiment analysis algorithms, NexoSphere provides valuable insights into market trends and investor sentiment.
 
@@ -40,7 +40,12 @@ To run the project using Docker, follow these steps:
 
     Open your web browser and navigate to `http://localhost:your_port`.
 
-## Contributing
+    ## Setup Environment Variables
 
-We welcome contributions! Please read our [contributing guidelines](CONTRIBUTING.md) for more details.
+    Before running the project, you need to set up the environment variables. Create a `.env` file in the root directory of the project based on the `.env.example` file provided:
 
+    ```sh
+    cp .env.example .env
+    ```
+
+    Edit the `.env` file to configure the necessary environment variables.
